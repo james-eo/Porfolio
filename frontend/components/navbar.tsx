@@ -1,6 +1,9 @@
+"use client";
+
 import React, { useState } from "react";
 import { ModeToggle } from "./mode-toggle";
 import { usePathname } from "next/navigation";
+import { ThemeProvider } from "./theme-provider";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,7 +15,7 @@ const Navbar = () => {
 
   return (
     <div>
-      Navbar
+      <ThemeProvider />
       <ModeToggle />
       {/* Add other navbar items here */}
     </div>
