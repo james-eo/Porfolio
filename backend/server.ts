@@ -1,7 +1,8 @@
 import express from "express";
 import dotenv from "dotenv";
-import connectDB from "./src/utils/db";
-
+import connectDB from "./src/config/db";
+import aboutRoute from "./src/routes/about.routes";
+import router from "./src/routes/about.routes";
 // Load environment variables from .env file
 dotenv.config();
 
@@ -12,6 +13,12 @@ connectDB();
 
 const app = express();
 const PORT = process.env.PORT || 8000;
+
+// Middleware to parse JSON bodies
+app.use(express.json());
+
+// Routes
+app.use("/about", aboutRoute);
 
 app.get("/", (req, res) => {
   res.send("Hello, World!");
