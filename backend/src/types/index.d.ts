@@ -40,7 +40,7 @@ export interface UserDocument extends IUser, Document {
 }
 
 // =============================================================================
-// ABOUT INTERFACES
+// SOCIAL LINKS INTERFACES
 // =============================================================================
 export interface ISocialLink {
   platform: string;
@@ -60,12 +60,24 @@ export interface ILocation {
   };
 }
 
-export interface IContactInfo {
-  email?: string;
-  phone?: string;
-  alternateEmail?: string;
-  preferredContact?: "email" | "phone" | "linkedin";
+export interface IContact {
+  name: string;
+  email: string;
+  subject: string;
+  message: string;
+  read?: boolean;
 }
+
+export interface ContactDocument extends IContact, Document {
+  createdAt: Date;
+  updatedAt: Date;
+}
+// export interface IContactInfo {
+//   email?: string;
+//   phone?: string;
+//   alternateEmail?: string;
+//   preferredContact?: "email" | "phone" | "linkedin";
+// }
 
 export interface IAvailability {
   status: "available" | "busy" | "not-available";
@@ -464,4 +476,168 @@ export interface ISearchQuery {
   sort?: string;
   page?: number;
   limit?: number;
+}
+
+// =============================================================================
+// RESUME INTERFACES
+// =============================================================================
+export interface IResumeTemplate {
+  id: string;
+  name: string;
+  description: string;
+  category: "modern" | "classic" | "creative" | "minimal" | "professional";
+  preview: string; // URL to preview image
+  templateFile: string; // Template file path
+  active: boolean;
+  customizable: {
+    colors: boolean;
+    fonts: boolean;
+    layout: boolean;
+    sections: boolean;
+  };
+  supportedFormats: ("pdf" | "docx" | "html")[];
+  createdBy: string;
+  order?: number;
+}
+
+export interface ResumeTemplateDocument extends IResumeTemplate, Document {
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface IResumeSettings {
+  selectedTemplate: string;
+  customization: {
+    primaryColor?: string;
+    secondaryColor?: string;
+    fontFamily?: string;
+    fontSize?: number;
+    spacing?: "compact" | "normal" | "spacious";
+  };
+  sectionsConfig: {
+    personalInfo: {
+      show: boolean;
+      order: number;
+      fields: {
+        name: boolean;
+        title: boolean;
+        email: boolean;
+        phone: boolean;
+        location: boolean;
+        website: boolean;
+        linkedin: boolean;
+        github: boolean;
+      };
+    };
+    summary: {
+      show: boolean;
+      order: number;
+      useTagline: boolean; // Use tagline instead of full summary
+    };
+    experience: {
+      show: boolean;
+      order: number;
+      limit?: number; // Max number of experiences to show
+      showAchievements: boolean;
+      showTechnologies: boolean;
+    };
+    projects: {
+      show: boolean;
+      order: number;
+      limit?: number;
+      showFeaturedOnly: boolean;
+      showTechnologies: boolean;
+      showLinks: boolean;
+    };
+    skills: {
+      show: boolean;
+      order: number;
+      groupByCategory: boolean;
+      showProficiency: boolean;
+      categoriesConfig: {
+        [key: string]: {
+          show: boolean;
+          order: number;
+          limit?: number;
+        };
+      };
+    };
+    education: {
+      show: boolean;
+      order: number;
+      showGpa: boolean;
+      showCourses: boolean;
+      showHonors: boolean;
+    };
+    achievements: {
+      show: boolean;
+      order: number;
+      limit?: number;
+    };
+    languages: {
+      show: boolean;
+      order: number;
+      showProficiency: boolean;
+    };
+    certifications: {
+      show: boolean;
+      order: number;
+      limit?: number;
+      showExpiry: boolean;
+    };
+  };
+  pageSettings: {
+    format: "A4" | "Letter" | "Legal";
+    margins: {
+      top: number;
+      bottom: number;
+      left: number;
+      right: number;
+    };
+    orientation: "portrait" | "landscape";
+  };
+}
+
+export interface ResumeSettingsDocument extends IResumeSettings, Document {
+  userId: Types.ObjectId;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface IResumeGeneration {
+  userId: Types.ObjectId;
+  templateId: string;
+  format: "pdf" | "docx" | "html";
+  fileName: string;
+  filePath: string;
+  fileSize: number;
+  downloadCount: number;
+  lastDownloaded?: Date;
+  dataSnapshot: {
+    aboutId?: Types.ObjectId;
+    experienceIds: Types.ObjectId[];
+    projectIds: Types.ObjectId[];
+    skillIds: Types.ObjectId[];
+    educationIds: Types.ObjectId[];
+    // Store IDs to track what data was used
+  };
+  generatedAt: Date;
+  expiresAt?: Date; // Auto-cleanup old files
+}
+
+export interface ResumeGenerationDocument extends IResumeGeneration, Document {
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface IResumeData {
+  personalInfo: IAbout;
+  experience: IExperience[];
+  projects: IProject[];
+  skills: ISkill[];
+  skillCategories: ISkillCategory[];
+  education: IEducation[];
+  certifications: ICertification[];
+  generatedAt: Date;
+  settings: IResumeSettings;
 }
