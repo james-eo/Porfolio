@@ -135,44 +135,31 @@ export interface AboutDocument extends IAbout, Document {
 
 // =============================================================================
 // SKILLS INTERFACES
-// =============================================================================
+// =============================================================================:
 export interface ISkill {
   name: string;
   proficiency: number; // 1-10 scale
   yearsOfExperience?: number;
-  category:
-    | "frontend"
-    | "backend"
-    | "database"
-    | "devops"
-    | "tools"
-    | "soft-skills"
-    | "languages";
+  categoryId: Types.ObjectId; // Reference to category
   icon?: string;
   color?: string;
   description?: string;
   lastUsed?: Date;
   trending?: boolean;
-  certifications?: ICertification[];
+  certifications?: Types.ObjectId[]; // Reference to certifications
   relatedProjects?: Types.ObjectId[];
-}
-
-export interface ICertification {
-  name: string;
-  issuer: string;
-  date: Date;
-  expiryDate?: Date;
-  credentialId?: string;
-  url?: string;
+  order?: number;
+  isActive?: boolean;
 }
 
 export interface ISkillCategory {
   name: string;
+  slug: string; // For SEO-friendly URLs
   description?: string;
   icon?: string;
   color?: string;
   order?: number;
-  skills: ISkill[];
+  isActive?: boolean;
 }
 
 export interface SkillDocument extends ISkill, Document {
@@ -184,6 +171,15 @@ export interface SkillCategoryDocument extends ISkillCategory, Document {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface ICertification {
+  name: string;
+  issuer: string;
+  date: Date;
+  expiryDate?: Date;
+  credentialId?: string;
+  url?: string;
+}
 // =============================================================================
 // EXPERIENCE INTERFACES
 // =============================================================================
@@ -193,9 +189,8 @@ export interface IExperience {
   company: string;
   companyUrl?: string;
   companyLogo?: string;
-  location?: string;
-  workType: "full-time" | "part-time" | "contract" | "internship" | "freelance";
-  workMode: "remote" | "on-site" | "hybrid";
+  workType: "Full Time" | "Part Time" | "Contract" | "Internship" | "Freelance";
+  workMode: "Remote" | "Onsite" | "Hybrid";
   startDate: Date;
   endDate?: Date;
   current?: boolean;
@@ -204,12 +199,6 @@ export interface IExperience {
   skills: string[];
   technologies: string[];
   teamSize?: number;
-  reportingTo?: string;
-  salary?: {
-    amount?: number;
-    currency?: string;
-    period?: "hourly" | "monthly" | "yearly";
-  };
   order?: number;
 }
 
@@ -232,35 +221,21 @@ export interface IProjectMetrics {
 export interface IProject {
   title: string;
   description: string;
-  shortDescription?: string;
   outcomes?: string[];
   features: string[];
   challenges?: string[];
   learnings?: string[];
   technologies: string[];
-  category: "web" | "mobile" | "desktop" | "api" | "ai/ml" | "web3" | "other";
-  status: "completed" | "in-progress" | "planned" | "on-hold";
+  category: "Web" | "Mobile" | "Desktop" | "API" | "AI/ML" | "Web3" | "Other";
+  status: "Completed" | "In progress" | "Planned" | "On hold";
   githubUrl?: string;
   liveUrl?: string;
   documentationUrl?: string;
   images: string[];
   videoUrl?: string;
-  demoCredentials?: {
-    username?: string;
-    password?: string;
-  };
-  featured?: boolean;
-  priority?: number;
   order?: number;
-  startDate?: Date;
-  endDate?: Date;
-  duration?: string; // "3 months"
-  client?: string;
-  teamSize?: number;
   myRole?: string;
-  budget?: number;
   metrics: IProjectMetrics;
-  tags: string[];
   seo?: {
     keywords: string[];
     metaDescription?: string;
@@ -275,24 +250,32 @@ export interface ProjectDocument extends IProject, Document {
 // EDUCATION INTERFACES
 // =============================================================================
 export interface IEducation {
-  degree: string;
+  degreeType:
+    | "High School"
+    | "Associate's"
+    | "Bachelor's"
+    | "Master's"
+    | "Doctorate"
+    | "Diploma"
+    | "Certificate"
+    | "Other";
+  degreeLevel?:
+    | "Undergraduate"
+    | "Graduate"
+    | "Postgraduate"
+    | "Professional"
+    | "Other";
   fieldOfStudy?: string;
   institution: string;
   institutionUrl?: string;
   institutionLogo?: string;
-  location?: string;
+  country: string;
+  region?: string;
+  city?: string;
   startDate: Date;
   endDate?: Date;
-  gpa?: number;
-  maxGpa?: number;
-  honors?: string[];
+  current?: boolean;
   relevantCourses?: string[];
-  thesis?: {
-    title: string;
-    description?: string;
-    url?: string;
-  };
-  activities?: string[];
   description?: string;
   order?: number;
 }
